@@ -34,7 +34,7 @@ isDirect = function(userId, messageText) {
 
 
 slack.on("message", function (message) {
-    console.log(message)
+    // console.log(message)
     var channel = slack.getChannelGroupOrDMByID(message.channel);
     var user = slack.getUserByID(message.user);
     // console.log(user)
@@ -50,14 +50,14 @@ slack.on("message", function (message) {
 
         giphy.random({tag: searchTerms, rating: "pg-13"}, function (err, gif, res) {
 
-            console.log(gif)
+            // console.log(gif)
 
             // 2. direct message it to the user
 
             dm = slack.getDMByName(user.name)
 
-            dm.send("> How does this one look?")
-            dm.send("> " + gif.data.url)
+            dm.send("> How does this one look? \n> " + gif.data.url)
+            // dm.send("> " + gif.data.url)
 
             // dm.send("hello!")
 
