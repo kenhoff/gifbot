@@ -1,0 +1,22 @@
+{
+  "name": "gifbot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kenhoff/gifbot.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kenhoff/gifbot/issues"
+  },
+  "homepage": "https://github.com/kenhoff/gifbot#readme",
+  "dependencies": {
+    "slack-client": "^1.4.1"
+  }
+}
