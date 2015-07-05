@@ -25,8 +25,6 @@ makeMention = function(userId) {
 isDirect = function(userId, messageText) {
     var userTag = makeMention(userId);
 
-    // console.log((messageText.indexOf(userTag) != -1))
-
     return (messageText.indexOf(userTag) != -1)
 };
 
@@ -34,44 +32,40 @@ isDirect = function(userId, messageText) {
 
 
 slack.on("message", function (message) {
-    // console.log(message)
+    // console.log(message);
     var channel = slack.getChannelGroupOrDMByID(message.channel);
     var user = slack.getUserByID(message.user);
-    // console.log(user)
+    // console.log(channel)
     if (message.type === 'message' && !("subtype" in message) && isDirect(slack.self.id, message.text)) {
-        // console.log (message.text)
-        // channel.send("hello!")
-
         searchTerms = message.text.replace(makeMention(slack.self.id), "")
-
-        // channel.send("i'm gonna try to find a gif with the terms: " + searchTerms)
-
         // 1. grab a random gif from the giphy api
-
         giphy.random({tag: searchTerms, rating: "pg-13"}, function (err, gif, res) {
-
-            // console.log(gif)
-
             // 2. direct message it to the user
-
             dm = slack.getDMByName(user.name)
-
             dm.send("> How does this one look? \n> " + gif.data.url)
-            // dm.send("> " + gif.data.url)
-
-            // dm.send("hello!")
-
+            users[user.id] = searchTerms
+            console.log(users);
         })
-
         // 3. if the user responds "yes", post the gif to the channel
         // 4. if the user responds "no", goto step 1
+    }
 
-
+    if (channel.is_im) {
+        console.log("got a dm");
+        if (message.text == "yes") {
+            console.log("posting gif");
+        }
+        else {
+            console.log("finding new gif");
+        }
     }
 
 })
 
+users = {}
 
-
+//
+//
+//
 
 slack.login()
