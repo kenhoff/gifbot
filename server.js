@@ -10,6 +10,12 @@ giphy = require("giphy")(giphyToken)
 
 slack = new Slack(slackToken, true, true)
 
+var CronJob = require('cron').CronJob;
+new CronJob('00 */10 * * * *', function() {
+    date = new Date().toUTCString()
+    console.log('wake up gifbot! ' + date);
+}, null, true, 'America/Los_Angeles');
+
 slack.on("open", function () {
     // console.log("opened!")
     // console.log(slack)
