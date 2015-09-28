@@ -17,7 +17,6 @@
   },
   "homepage": "https://github.com/kenhoff/gifbot#readme",
   "dependencies": {
-    "cron": "^1.0.9",
     "giphy": "0.0.4",
     "slack-client": "^1.4.1"
   }
