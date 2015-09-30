@@ -16,7 +16,7 @@
     "url": "https://github.com/kenhoff/gifbot/issues"
   },
   "bin": {
-    "gifbot": "run.js"
+    "gifbot": "./run.js"
   },
   "homepage": "https://github.com/kenhoff/gifbot#readme",
   "dependencies": {
