@@ -2,7 +2,7 @@
   "name": "gifbot",
   "version": "1.0.3",
   "description": "",
-  "main": "server.js",
+  "main": "gifbot.js",
   "scripts": {
     "test": "test.js"
   },
