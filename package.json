@@ -1,26 +1,26 @@
 {
-	"name": "gifbot",
-	"version": "1.0.3",
-	"description": "",
-	"main": "gifbot.js",
-	"scripts": {
-		"test": "run.js"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/kenhoff/gifbot.git"
-	},
-	"author": "",
-	"license": "MIT",
-	"bugs": {
-		"url": "https://github.com/kenhoff/gifbot/issues"
-	},
-	"bin": {
-		"gifbot": "run.js"
-	},
-	"homepage": "https://github.com/kenhoff/gifbot#readme",
-	"dependencies": {
-		"giphy": "0.0.4",
-		"slack-client": "^1.4.1"
-	}
+  "name": "gifbot",
+  "version": "1.0.4",
+  "description": "",
+  "main": "gifbot.js",
+  "scripts": {
+    "test": "run.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kenhoff/gifbot.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kenhoff/gifbot/issues"
+  },
+  "bin": {
+    "gifbot": "run.js"
+  },
+  "homepage": "https://github.com/kenhoff/gifbot#readme",
+  "dependencies": {
+    "giphy": "0.0.4",
+    "slack-client": "^1.4.1"
+  }
 }
