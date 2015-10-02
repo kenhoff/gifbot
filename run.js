@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 Gifbot = require("../gifbot")
 console.log(process.env.SLACK_TOKEN)
 if (process.env.SLACK_TOKEN) {
