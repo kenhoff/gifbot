@@ -5,19 +5,27 @@ giphyToken = "dc6zaTOxFJmzC"
 
 Slack = require("slack-client")
 giphy = require("giphy")(giphyToken)
+var events = require('events');
 
 
 Gifbot = function (slackToken) {
+	// see link below...
+	events.EventEmitter.call(this)
 	this.slackToken = slackToken
-	this.slack = new Slack(slackToken, true, true)
+	this.slack = new Slack(slackToken, false, true)
 
 	this.slack.login()
 	this.slack.on("error", function (err) {
 		console.error("error! oh noez!")
 		console.error(err);
-		throw "this is an error"
-	})
+	}.bind(this))
 }
+
+
+
+// ???
+// http://www.sitepoint.com/nodejs-events-and-eventemitter/
+Gifbot.prototype.__proto__ = events.EventEmitter.prototype
 
 module.exports = Gifbot
 
