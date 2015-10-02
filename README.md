@@ -14,3 +14,6 @@ Gifbot changes that. Mention `@gifbot` with your desired gif, and gifbot will DM
 - gifbot posts your perfect gif to the channel
 
 ## How to install
+```
+npm install gifbot -g
+```
