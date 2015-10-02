@@ -1,6 +1,6 @@
 {
   "name": "gifbot",
-  "version": "1.0.4",
+  "version": "1.0.16",
   "description": "",
   "main": "gifbot.js",
   "scripts": {
@@ -15,12 +15,14 @@
   "bugs": {
     "url": "https://github.com/kenhoff/gifbot/issues"
   },
-  "bin": {
-    "gifbot": "run.js"
-  },
+  "preferGlobal": "true",
+  "bin": "run.js",
   "homepage": "https://github.com/kenhoff/gifbot#readme",
   "dependencies": {
     "giphy": "0.0.4",
     "slack-client": "^1.4.1"
+  },
+  "engines": {
+    "node": ">=0.10"
   }
 }

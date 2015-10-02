@@ -1,4 +1,6 @@
-Gifbot = require("../gifbot")
+#!/usr/bin/env node
+
+Gifbot = require("./gifbot.js")
 console.log(process.env.SLACK_TOKEN)
 if (process.env.SLACK_TOKEN) {
 	newGifbot = new Gifbot(process.env.SLACK_TOKEN)
