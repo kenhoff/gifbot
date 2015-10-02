@@ -18,6 +18,7 @@ Gifbot = function (slackToken) {
 	this.slack.on("error", function (err) {
 		console.error("error! oh noez!")
 		console.error(err);
+		this.emit("error")
 	}.bind(this))
 }
 
