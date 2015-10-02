@@ -12,6 +12,11 @@ Gifbot = function (slackToken) {
 	this.slack = new Slack(slackToken, true, true)
 
 	this.slack.login()
+	this.slack.on("error", function (err) {
+		console.error("error! oh noez!")
+		console.error(err);
+		throw "this is an error"
+	})
 }
 
 module.exports = Gifbot
