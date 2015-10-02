@@ -1,6 +1,4 @@
-// TODO
-// remove punctuation
-// ignore blank replies
+
 giphyToken = "dc6zaTOxFJmzC"
 
 Slack = require("slack-client")
