@@ -16,13 +16,9 @@ Gifbot = function (slackToken) {
 
 	this.slack.login()
 	this.slack.on("error", function (err) {
-		console.error("error! oh noez!")
-		console.error(err);
-		this.emit("error")
+		this.emit("error", err)
 	}.bind(this))
 }
-
-
 
 // ???
 // http://www.sitepoint.com/nodejs-events-and-eventemitter/
