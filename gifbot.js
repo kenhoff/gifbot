@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-
-=======
->>>>>>> dev
 giphyToken = "dc6zaTOxFJmzC"
 
 Slack = require("slack-client")
