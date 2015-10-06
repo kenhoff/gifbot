@@ -23,7 +23,7 @@ Gifbot = function(slackToken) {
 
 	this.dmGif = function(searchTerms, userId, channelId) {
 		// scrub search terms
-		console.log(searchTerms.replace(/:/, "").trim());
+		searchTerms = searchTerms.replace(/:/, "").trim()
 
 		giphy.random({
 			tag: searchTerms,
