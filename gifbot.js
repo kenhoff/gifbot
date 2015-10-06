@@ -60,6 +60,7 @@ Gifbot = function(slackToken) {
 			} else if (message.text == "yes") {
 				// post the latest gif for the user into the channel
 				this.slack.getChannelGroupOrDMByID(this.users[message.user].channelId).send(this.users[message.user].latestGif)
+				delete this.users[message.user]
 			} else {
 				this.dmGif(this.users[message.user].search, user.id, this.users[message.user].channelId)
 			}
