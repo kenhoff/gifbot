@@ -41,12 +41,12 @@ Gifbot = function(slackToken) {
 		var channel = this.slack.getChannelGroupOrDMByID(message.channel);
 		var user = this.slack.getUserByID(message.user);
 		// If a user mentions gifbot in a channel...
-		if (message.type === 'message' && !("subtype" in message) && isDirect(this.slack.self.id, message.text)) {
+		if (message.type === 'message' && !("subtype" in message) && isMention(this.slack.self.id, message.text)) {
 			searchTerms = message.text.replace(makeMention(this.slack.self.id), "")
 			this.dmGif(searchTerms, user.id, channel.id)
 		}
 		// If the user isn't gifbot...
-		else if ((message.user != this.slack.self.id) && !("subtype" in message)) {
+		else if ((message.user != this.slack.self.id) && !("subtype" in message) && isDirect(message.channel)) {
 			if (this.users[message.user] == null) {
 				return
 			} else if (message.text == "yes") {
@@ -68,7 +68,11 @@ makeMention = function(userId) {
 	return '<@' + userId + '>';
 };
 
-isDirect = function(userId, messageText) {
+isDirect = function (channel) {
+	return (channel[0] == 'D')
+}
+
+isMention = function(userId, messageText) {
 	var userTag = makeMention(userId);
 
 	return (messageText.indexOf(userTag) != -1)
