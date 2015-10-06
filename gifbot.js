@@ -23,11 +23,16 @@ Gifbot = function(slackToken) {
 		}, function(err, gif, res) {
 			// 2. direct message it to the user
 			dm = this.slack.getDMByName(this.slack.getUserByID(userId).name)
-			dm.send("> How does this one look? Respond with `yes` or `no`\n> " + gif.data.url)
-			this.users[userId] = {
-				"search": searchTerms,
-				"latestGif": gif.data.url,
-				"channelId": channelId
+			if (gif.data.length == 0) {
+				dm.send("I couldn't find any gifs of `" + searchTerms + "` :(")
+			}
+			else {
+				dm.send("> How does this one look? Respond with `yes` or `no`\n> " + gif.data.url)
+				this.users[userId] = {
+					"search": searchTerms,
+					"latestGif": gif.data.url,
+					"channelId": channelId
+				}
 			}
 		}.bind(this))
 	}
