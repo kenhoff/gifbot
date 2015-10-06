@@ -12,4 +12,9 @@ Mention `@gifbot` with your desired gif, and gifbot will DM you options for gifs
 ## How to install
 ```
 npm install gifbot -g
+SLACK_TOKEN=insert-your-slack-token-here gifbot
 ```
+
+## Get help
+
+Having trouble installing? Open an issue, or get in touch at [ken@hoff.tech](mailto:ken@hoff.tech?subject=gifbot help).
