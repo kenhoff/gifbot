@@ -13,10 +13,18 @@ Gifbot = function(slackToken) {
 
 	this.slack.login()
 	this.slack.on("error", function(err) {
-		this.emit("error", err)
+		// console.log(err);
+		msg = err
+		if (err == "invalid_auth") {
+			msg = "Invalid slack API token: " + this.slackToken
+		}
+		this.emit("error", msg)
 	}.bind(this))
 
 	this.dmGif = function(searchTerms, userId, channelId) {
+		// scrub search terms
+		console.log(searchTerms.replace(/:/, "").trim());
+
 		giphy.random({
 			tag: searchTerms,
 			rating: "pg-13"
