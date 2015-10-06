@@ -2,6 +2,7 @@ giphyToken = "dc6zaTOxFJmzC"
 
 Slack = require("slack-client")
 giphy = require("giphy")(giphyToken)
+var sentiment = require('sentiment');
 var events = require('events');
 
 Gifbot = function(slackToken) {
@@ -35,7 +36,7 @@ Gifbot = function(slackToken) {
 				dm.send("I couldn't find any gifs of `" + searchTerms + "` :(")
 			}
 			else {
-				dm.send("> How does this one look? Respond with `yes` or `no`\n> " + gif.data.url)
+				dm.send("> How does this one look?\n> " + gif.data.url)
 				this.users[userId] = {
 					"search": searchTerms,
 					"latestGif": gif.data.url,
@@ -57,12 +58,16 @@ Gifbot = function(slackToken) {
 		else if ((message.user != this.slack.self.id) && !("subtype" in message) && isDirect(message.channel)) {
 			if (this.users[message.user] == null) {
 				return
-			} else if (message.text == "yes") {
+			} else if (sentiment(message.text).score > "0") {
 				// post the latest gif for the user into the channel
 				this.slack.getChannelGroupOrDMByID(this.users[message.user].channelId).send(this.users[message.user].latestGif)
 				delete this.users[message.user]
-			} else {
+			} else if (sentiment(message.text).score < "0") {
 				this.dmGif(this.users[message.user].search, user.id, this.users[message.user].channelId)
+			}
+			else {
+				dm = this.slack.getDMByName(this.slack.getUserByID(user.id).name)
+				dm.send("I didn't quite understand that :( try again? Maybe try responding with `yes` or `no`.")
 			}
 		}
 	}.bind(this))

@@ -20,6 +20,7 @@
   "homepage": "https://github.com/kenhoff/gifbot#readme",
   "dependencies": {
     "giphy": "0.0.4",
+    "sentiment": "^1.0.2",
     "slack-client": "^1.4.1"
   },
   "engines": {
