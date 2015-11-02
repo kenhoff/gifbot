@@ -7,8 +7,10 @@ var events = require('events');
 
 Gifbot = function(slackToken) {
 	this.users = {}
-		// see link below...
+
+	// see link below...
 	events.EventEmitter.call(this)
+
 	this.slackToken = slackToken
 	this.slack = new Slack(slackToken, false, true)
 
@@ -62,19 +64,25 @@ Gifbot = function(slackToken) {
 			console.log(message.user, "requested a gif for", searchTerms, "in", message.channel);
 			this.dmGif(searchTerms, user.id, channel.id)
 		}
-		// If the user isn't gifbot...
+		// If the user isn't gifbot, and the message is a direct message...
 		else if ((message.user != this.slack.self.id) && !("subtype" in message) && isDirect(message.channel)) {
+			// If this user isn't in our list of current gifs for users, ignore it
 			if (this.users[message.user] == null) {
 				return
-			} else if (sentiment(message.text).score > "0") {
+			}
+			// If the user says something like "yes", post the latest gif we sent them
+			else if (sentiment(message.text).score > "0") {
 				// post the latest gif for the user into the channel
 				console.log(message.user, "accepted and posted gif", this.users[message.user].latestGif, "to", message.channel, "with search terms:", searchTerms);
 				this.slack.getChannelGroupOrDMByID(this.users[message.user].channelId).send(this.users[message.user].latestGif)
 				delete this.users[message.user]
-			} else if (sentiment(message.text).score < "0") {
+			}
+			// If the user says something like "no", find a new gif for them
+			else if (sentiment(message.text).score < "0") {
 				console.log(message.user, "rejected gif", this.users[message.user].latestGif, "for", message.channel, "with search terms:", searchTerms);
 				this.dmGif(this.users[message.user].search, user.id, this.users[message.user].channelId)
 			}
+			// If we didn't understand what the user just said, let the user know that they should try again
 			else {
 				dm = this.slack.getDMByName(this.slack.getUserByID(user.id).name)
 				dm.send("I didn't quite understand that :( try again? Maybe try responding with `yes` or `no`.")
