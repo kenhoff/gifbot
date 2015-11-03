@@ -55,7 +55,9 @@ Gifbot = function(slackToken) {
 				this.users[userId] = {
 					"search": searchTerms,
 					"latestGif": gif.data.url,
-					"channelId": channelId
+					"channelId": channelId,
+					"isSearching": true,
+					"datetime": new Date()
 				}
 			}
 		}.bind(this))
@@ -74,6 +76,7 @@ Gifbot = function(slackToken) {
 
 		// If the user isn't gifbot, and the message is a direct message...
 		else if ((message.user != this.slack.self.id) && !("subtype" in message) && isDirect(message.channel)) {
+
 			// If the message contains a reference to a channel, then start suggesting a gif
 			targetChannel = containsChannel(message.text)
 			if (targetChannel) {
@@ -82,16 +85,23 @@ Gifbot = function(slackToken) {
 				this.dmGif(searchTerms, user.id, targetChannel)
 			}
 
-			// If this user isn't in our list of current gifs for users, ignore it
+			// If we've never seen this user before, ignore it
 			else if (this.users[message.user] == null) {
 				return
 			}
+
+			// ......do we actually need this?
+			//  this user isn't currently searching for a gif, ignore it
+			// else if (this.users[message.user]["isSearching"] == false) {
+			// 	return
+			// }
 
 			// If the user says something like "yes", post the latest gif we sent them
 			else if (sentiment(message.text).score > "0") {
 				// post the latest gif for the user into the channel
 				console.log(message.user, "accepted and posted gif", this.users[message.user].latestGif, "to", message.channel, "with search terms:", searchTerms);
 				this.slack.getChannelGroupOrDMByID(this.users[message.user].channelId).send(this.users[message.user].latestGif)
+				// this.users[message.user]["isSearching"] = false
 				delete this.users[message.user]
 			}
 
