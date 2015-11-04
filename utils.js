@@ -18,7 +18,6 @@ module.exports = {
 		// e.g. "<@U078S7E81>"
 		regex = /<@(U.*?)>/
 		result = regex.exec(messageText)
-		console.log(result);
 		if (result) {
 			return result[1]
 		}
