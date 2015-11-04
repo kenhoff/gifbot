@@ -4,6 +4,7 @@ Slack = require("slack-client")
 giphy = require("giphy")(giphyToken)
 var sentiment = require('sentiment');
 var events = require('events');
+var utils = require('./utils');
 
 Gifbot = function(slackToken) {
 	this.users = {}
@@ -36,8 +37,8 @@ Gifbot = function(slackToken) {
 	}.bind(this))
 
 	this.dmGif = function(searchTerms, userId, channelId) {
-		// scrub search terms
-		searchTerms = searchTerms.replace(/:/, "").trim()
+
+		searchTerms = utils.scrubSearchString(searchTerms)
 
 		giphy.random({
 			tag: searchTerms,
@@ -67,20 +68,20 @@ Gifbot = function(slackToken) {
 		var channel = this.slack.getChannelGroupOrDMByID(message.channel);
 		var user = this.slack.getUserByID(message.user);
 
+		searchTerms = message.text
+
 		// If a user mentions gifbot in a channel...
-		if (message.type === 'message' && !("subtype" in message) && isMention(this.slack.self.id, message.text)) {
-			searchTerms = message.text.replace(makeMention(this.slack.self.id), "")
+		if (message.type === 'message' && !("subtype" in message) && utils.isMention(this.slack.self.id, message.text)) {
 			console.log(message.user, "requested a gif for", searchTerms, "in", message.channel);
 			this.dmGif(searchTerms, user.id, channel.id)
 		}
 
 		// If the user isn't gifbot, and the message is a direct message...
-		else if ((message.user != this.slack.self.id) && !("subtype" in message) && isDirect(message.channel)) {
+		else if ((message.user != this.slack.self.id) && !("subtype" in message) && utils.isDirect(message.channel)) {
 
 			// If the message contains a reference to a channel, then start suggesting a gif
-			targetChannel = containsChannel(message.text)
+			targetChannel = utils.containsChannel(message.text)
 			if (targetChannel) {
-				searchTerms = message.text.replace(makeChannel(targetChannel), "")
 				console.log(message.user, "requested a gif for", searchTerms, "in", targetChannel);
 				this.dmGif(searchTerms, user.id, targetChannel)
 			}
@@ -123,36 +124,5 @@ Gifbot = function(slackToken) {
 // ???
 // http://www.sitepoint.com/nodejs-events-and-eventemitter/
 Gifbot.prototype.__proto__ = events.EventEmitter.prototype
-
-makeMention = function(userId) {
-	// wraps userid in slack tag
-	return '<@' + userId + '>';
-};
-
-isDirect = function (channel) {
-	return (channel[0] == 'D')
-}
-
-isMention = function(userId, messageText) {
-	var userTag = makeMention(userId);
-
-	return (messageText.indexOf(userTag) != -1)
-};
-
-containsChannel = function (messageText) {
-	// e.g. "<#C078S7E81>"
-	regex = /<#(C.*?)>/
-	result = regex.exec(messageText)
-	if (result) {
-		return result[1]
-	}
-	else {
-		return null
-	}
-}
-
-makeChannel = function (channelId) {
-	return '<#' + channelId + '>';
-}
 
 module.exports = Gifbot
