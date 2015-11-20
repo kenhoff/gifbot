@@ -88,7 +88,10 @@ Gifbot = function(slackToken) {
 			// If the message contains a reference to a channel, then start suggesting a gif
 			targetChannel = utils.containsChannel(message.text)
 			if (targetChannel) {
-				// log.info(message.user, "requested a gif for", searchTerms, "in", targetChannel);
+				if (targetChannel.indexOf("|") >= 0) {
+					targetChannel = targetChannel.split("|")[0]
+				}
+
 				log.info("User: %s \t Channel: %s \t Search terms: %s \t Action: %s \t Gif: %s", message.user, targetChannel, utils.scrubSearchString(searchTerms), "request", null)
 
 				this.dmGif(searchTerms, user.id, targetChannel)
