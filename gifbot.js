@@ -6,7 +6,13 @@ var sentiment = require('sentiment');
 var events = require('events');
 var utils = require('./utils');
 var Log = require('log');
-log = new Log("info")
+
+if (process.env.NODE_ENV == "production"){
+	log = new Log("info")
+}
+else {
+	log = new Log("debug")
+}
 
 Gifbot = function(slackToken) {
 	this.users = {}
