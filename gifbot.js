@@ -27,7 +27,8 @@ Gifbot = function(slackToken) {
 
 	this.slack.on("open", function () {
 		log.info("Connected");
-	})
+		// log.debug(this.slack)
+	}.bind(this))
 
 	this.slack.on("error", function(err) {
 		log.error(err);
@@ -56,12 +57,26 @@ Gifbot = function(slackToken) {
 			dm = this.slack.getDMByName(this.slack.getUserByID(userId).name)
 			if (gif.data.length == 0) {
 				// gifbot can't find any gifs
-				log.info("User: %s \t Channel: %s \t Search terms: %s \t Action: %s \t Gif: %s", userId, channelId, searchTerms, "no_gifs", null)
+				logData = {
+					user: userId,
+					channel: channelId,
+					searchTerms: searchTerms,
+					event: "no_gifs",
+					gif: null
+				}
+				this.logEvent(logData, "info")
 				dm.send("I couldn't find any gifs of `" + searchTerms + "` :(")
 			}
 			else {
 				// gifbot suggests a gif
-				log.info("User: %s \t Channel: %s \t Search terms: %s \t Action: %s \t Gif: %s", userId, channelId, searchTerms, "suggestion", gif.data.url)
+				logData = {
+					user: userId,
+					channel: channelId,
+					searchTerms: searchTerms,
+					event: "suggestion",
+					gif: gif.data.url
+				}
+				this.logEvent(logData, "info")
 				dm.send("> How does this one look?\n> " + gif.data.url)
 				this.users[userId] = {
 					"search": searchTerms,
@@ -82,9 +97,14 @@ Gifbot = function(slackToken) {
 
 		// If a user mentions gifbot in a channel...
 		if (message.type === 'message' && !("subtype" in message) && utils.isMention(this.slack.self.id, message.text)) {
-			// log.info(message.user, "requested a gif for", searchTerms, "in", message.channel);
-			log.info("User: %s \t Channel: %s \t Search terms: %s \t Action: %s \t Gif: %s", message.user, message.channel, utils.scrubSearchString(searchTerms), "request", null)
-
+			logData = {
+				user: message.user,
+				channel: message.channel,
+				searchTerms: utils.scrubSearchString(searchTerms),
+				event: "request",
+				gif: null
+			}
+			this.logEvent(logData, "info")
 			this.dmGif(searchTerms, user.id, channel.id)
 		}
 
@@ -97,9 +117,14 @@ Gifbot = function(slackToken) {
 				if (targetChannel.indexOf("|") >= 0) {
 					targetChannel = targetChannel.split("|")[0]
 				}
-
-				log.info("User: %s \t Channel: %s \t Search terms: %s \t Action: %s \t Gif: %s", message.user, targetChannel, utils.scrubSearchString(searchTerms), "request", null)
-
+				logData = {
+					user: message.user,
+					channel: targetChannel,
+					searchTerms: utils.scrubSearchString(searchTerms),
+					event: "request",
+					gif: null
+				}
+				this.logEvent(logData, "info")
 				this.dmGif(searchTerms, user.id, targetChannel)
 			}
 
@@ -111,28 +136,51 @@ Gifbot = function(slackToken) {
 			// If the user says something like "yes", post the latest gif we sent them
 			else if (sentiment(message.text).score > "0") {
 				// post the latest gif for the user into the channel
-				log.info("User: %s \t Channel: %s \t Search terms: %s \t Action: %s \t Gif: %s", message.user, this.users[message.user].channelId, this.users[message.user].search, "accept", this.users[message.user].latestGif)
-				// log.info(message.user, "accepted and posted gif", this.users[message.user].latestGif, "to", message.channel, "with search terms:", searchTerms);
+				logData = {
+					user: message.user,
+					channel: this.users[message.user].channelId,
+					searchTerms: this.users[message.user].search,
+					event: "accept",
+					gif: this.users[message.user].latestGif
+				}
+				this.logEvent(logData, "info")
 				this.slack.getChannelGroupOrDMByID(this.users[message.user].channelId).send(this.users[message.user].latestGif)
-				// this.users[message.user]["isSearching"] = false
 				delete this.users[message.user]
 			}
 
 			// If the user says something like "no", find a new gif for them
 			else if (sentiment(message.text).score < "0") {
-				// log.info(message.user, "rejected gif", this.users[message.user].latestGif, "for", message.channel, "with search terms:", searchTerms);
-				log.info("User: %s \t Channel: %s \t Search terms: %s \t Action: %s \t Gif: %s", message.user, this.users[message.user].channelId, this.users[message.user].search, "reject", this.users[message.user].latestGif)
+				logData = {
+					user: message.user,
+					channel: this.users[message.user].channelId,
+					searchTerms: this.users[message.user].search,
+					event: "reject",
+					gif: this.users[message.user].latestGif
+				}
+				this.logEvent(logData, "info")
 				this.dmGif(this.users[message.user].search, user.id, this.users[message.user].channelId)
 			}
 
 			// If we didn't understand what the user just said, let the user know that they should try again
 			else {
 				dm = this.slack.getDMByName(this.slack.getUserByID(user.id).name)
-				log.info("User: %s \t Channel: %s \t Search terms: %s \t Action: %s \t Gif: %s", message.user, this.users[message.user].channelId, this.users[message.user].search, "bad_response", this.users[message.user].latestGif)
+				logData = {
+					user: message.user,
+					channel: this.users[message.user].channelId,
+					searchTerms: this.users[message.user].search,
+					event: "bad_response",
+					gif: this.users[message.user].latestGif
+				}
+				this.logEvent(logData, "info")
 				dm.send("I didn't quite understand that :( try again? Maybe try responding with `yes` or `no`.")
 			}
 		}
 	}.bind(this))
+
+	this.logEvent = function (logData, level) {
+		log[level]("User: %s \t Channel: %s \t Search terms: %s \t Action: %s \t Gif: %s", logData.user, logData.channel, logData.searchTerms, logData.event, logData.gif)
+		this.emit("log", logData)
+	}
 }
 
 // ???
